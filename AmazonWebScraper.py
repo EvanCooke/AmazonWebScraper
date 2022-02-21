@@ -48,3 +48,45 @@ review_count = item.find('span', {'class': 'a-size-base', 'class': 's-underline-
 print(review_count)
 
 
+# Generalize the pattern
+def extract_record(item):
+    """Extract and return data from a single record"""
+
+    # description and url
+    atag = item.h2.a
+    description = atag.text.strip()
+    url = 'https://www.amazon.com' + atag.get('href')
+
+    try:
+        # price
+        price_parent = item.find('span', 'a-price')
+        price = price_parent.find('span', 'a-offscreen').text
+    except AttributeError:
+        return
+
+    try:
+        # rank and rating
+        # get i tag found from first item's html contents in results
+        rating = item.i.text
+        review_count = item.find('span', {'class': 'a-size-base', 'class': 's-underline-text'}).text
+    except AttributeError:
+        rating = ''
+        review_count = ''
+
+    results = (description, price, rating, review_count, url)
+
+    return results
+
+
+records = []
+results = soup.find_all('div', {'data-component-type': 's-search-result'})
+
+for item in results:
+    record = extract_record(item)
+    if record:  # if record has something in it, add it to list
+        records.append(record)
+
+# print prices in records so far
+for row in records:
+    print(row[1])
+
