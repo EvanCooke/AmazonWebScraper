@@ -176,7 +176,7 @@ def main(search_term):
     driver.close()
 
     # Save data to csv file
-    with open('results.csv', 'w', newline='', encoding='utf-8') as f:
+    with open(search_term + ' results.csv', 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(['Description', 'Price', 'Rating', 'ReviewCount', 'Url'])
         writer.writerows(records)
